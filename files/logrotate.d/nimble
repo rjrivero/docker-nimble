@@ -1,0 +1,9 @@
+/var/log/nimble/*.log {
+    daily
+    rotate 10
+    compress
+    delaycompress
+    missingok
+    notifempty
+    nocreate
+}

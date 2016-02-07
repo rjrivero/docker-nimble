@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+if ! [ -f /etc/nimble/nimble.conf ]; then
+
+    ## Service is not registered yet
+    ##
+    cat <<EOF
+
+WARNING: Server is not registered yet!
+---------------------------------------
+
+Please run the container with the following
+environment variables.
+
+  - WMSPANEL_USER: WMSPanel registered username
+    (e.g. "my@email.com")
+  - WMSPANEL_PASS: WMSPanel user password
+  - WMSPANEL_SLICES: (optional) slice to register
+    the server to.
+
+You may want to mount the /etc/nimble folder from
+a persistent volume, so registration and config
+data is stored outside of the container.
+
+EOF
+
+    ## Sleep forever. Let the end user notice the error message
+    ## echoed to the logs.
+    ##
+    exec /sbin/setuser nimble sleep infinity 
+fi
+
+# Make nimble user the owner of files in log directory
+mkdir -p /var/log/nimble
+chown -R nimble:root /var/log/nimble
+
+# Make nimble user the owner of rules.conf
+if [ -f /etc/nimble/rules.conf ]; then
+    chown -R nimble:root /etc/nimble/rules.conf
+    chmod 664 /etc/nimble/rules.conf
+fi
+
+# Recreate a directory for a pidfile
+mkdir -p /var/run/nimble
+chown -R nimble:root /var/run/nimble
+chmod 775 /var/run/nimble
+
+# Set the maximum number of open file descriptors
+ulimit -n 50000
+
+ARGS="--conf-dir=/etc/nimble --log-dir=/var/log/nimble --pidfile=/var/run/nimble/nimble.pid"
+
+# Run the service as the nimble user
+exec /sbin/setuser nimble /usr/bin/nimble $ARGS

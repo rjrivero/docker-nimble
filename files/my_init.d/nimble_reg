@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+# If config file does not exist, try to register the instance
+if ! [ -f /etc/nimble/nimble.conf ]; then
+
+    # Need username and password to register
+    if ! [ -z "$WMSPANEL_USER" ]; then
+
+        cp -fr /etc/nimble.conf/* /etc/nimble
+        ARGS=""
+        if ! [ -z "$WMSPANEL_SLICES" ]; then
+            ARGS="--slices=$WMSPANEL_SLICES"
+        fi
+
+        # Try to register with apply-rules
+        if ! /usr/bin/nimble_regutil $ARGS --aply-rules-conf \
+             -u "$WMSPANEL_USER" -p "$WMSPANEL_PASS"; then
+            # Try without apply-rules
+            if ! /usr/bin/nimble_regutil $ARGS --aply-rules-conf \
+                 -u "$WMSPANEL_USER" -p "$WMSPANEL_PASS"; then
+                # Not able to register; remove config again
+                rm -f /etc/nimble/nimble.conf
+            fi
+        fi
+    fi
+fi
+    
+chown -R nimble:root /etc/nimble
+chown -R nimble:root /var/cache/nimble
+rm -f /etc/nimble/run_as_root

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+export LOGDIR=/var/log/nimble
+export SVCUSER=nimble
+
+mkdir -p "${LOGDIR}" && chown ${SVCUSER}:${SVCUSER} "${LOGDIR}"
+exec /sbin/setuser ${SVCUSER}  svlogd -tt "${LOGDIR}"
+
