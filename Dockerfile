@@ -2,7 +2,7 @@ FROM phusion/baseimage
 
 ## Install nimble and move all config files to /etc/nimble.conf
 ##
-RUN    echo "deb http://nimblestreamer.com/ubuntu trusty/" > /etc/apt/sources.list.d/nimblestreamer.list \
+RUN    echo "deb http://nimblestreamer.com/ubuntu xenial/" > /etc/apt/sources.list.d/nimblestreamer.list \
     && curl -L -s http://nimblestreamer.com/gpg.key | apt-key add - \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y nimble \
