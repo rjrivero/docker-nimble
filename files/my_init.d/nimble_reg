@@ -15,10 +15,10 @@ if ! [ -f /etc/nimble/nimble.conf ]; then
         fi
 
         # Try to register with apply-rules
-        if ! /usr/bin/nimble_regutil $ARGS --aply-rules-conf \
+        if ! /usr/bin/nimble_regutil $ARGS --apply-rules-conf \
              -u "$WMSPANEL_USER" -p "$WMSPANEL_PASS"; then
             # Try without apply-rules
-            if ! /usr/bin/nimble_regutil $ARGS --aply-rules-conf \
+            if ! /usr/bin/nimble_regutil $ARGS --apply-rules-conf \
                  -u "$WMSPANEL_USER" -p "$WMSPANEL_PASS"; then
                 # Not able to register; remove config again
                 rm -f /etc/nimble/nimble.conf
